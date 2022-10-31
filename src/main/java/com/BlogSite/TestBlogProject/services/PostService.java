@@ -1,8 +1,7 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.DTO.PostDto;
+import com.BlogSite.TestBlogProject.Dto.PostDto;
 import com.BlogSite.TestBlogProject.models.Post;
-import com.BlogSite.TestBlogProject.models.User;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

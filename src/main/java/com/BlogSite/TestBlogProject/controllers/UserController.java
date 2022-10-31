@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.controllers;
 
-import com.BlogSite.TestBlogProject.DTO.UserDto;
+import com.BlogSite.TestBlogProject.Dto.UserDto;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package com.BlogSite.TestBlogProject.DTO;
+package com.BlogSite.TestBlogProject.Dto;
 
 import lombok.Data;
 

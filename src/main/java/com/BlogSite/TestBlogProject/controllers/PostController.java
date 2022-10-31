@@ -1,11 +1,8 @@
 package com.BlogSite.TestBlogProject.controllers;
 
-import com.BlogSite.TestBlogProject.DTO.PostDto;
-import com.BlogSite.TestBlogProject.DTO.UserDto;
+import com.BlogSite.TestBlogProject.Dto.PostDto;
 import com.BlogSite.TestBlogProject.models.Post;
-import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.services.PostService;
-import com.BlogSite.TestBlogProject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

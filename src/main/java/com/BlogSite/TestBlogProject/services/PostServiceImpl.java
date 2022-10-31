@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.DTO.PostDto;
+import com.BlogSite.TestBlogProject.Dto.PostDto;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
@@ -20,8 +20,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getPostsByUsername(String username) {
-        Long userid = userRepository.findByUsername(username).getId();
-        return postRepository.findAllByUser_id(userid);
+        return postRepository.findAllByUser_id(username);
     }
 
     @Override
