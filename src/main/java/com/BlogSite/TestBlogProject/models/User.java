@@ -1,4 +1,4 @@
-package com.BlogSite.TestBlogProject.model;
+package com.BlogSite.TestBlogProject.models;
 
 import lombok.*;
 
