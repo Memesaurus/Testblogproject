@@ -25,15 +25,14 @@ class UserRepositoryTest {
     void ShouldFindUserByGivenUsername() {
         String username = "Test";
         String email = "Test@test.com";
-        User user = new User(1L,
+        User expected = new User(1L,
                 username,
                 email
         );
-        userRepository.save(user);
+        userRepository.save(expected);
 
-        User result = userRepository.findByUsername(username);
+        User result = userRepository.findByUsername(username).orElse(null);
 
-        User expected = user;
         assertThat(result).usingRecursiveComparison().isEqualTo(expected);
     }
 }

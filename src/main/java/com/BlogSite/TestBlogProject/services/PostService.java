@@ -9,5 +9,5 @@ import java.util.List;
 public interface PostService {
     List<Post> getPostsByUsername(String username);
     List<Post> getAllPosts();
-    ResponseEntity<?> postPost(PostDto postDto);
+    ResponseEntity<?> addPost(PostDto postDto);
 }

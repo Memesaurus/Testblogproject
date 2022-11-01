@@ -9,5 +9,6 @@ import java.util.List;
 public interface UserService {
     List<User> getUsers();
     User getUser(Long id);
-    ResponseEntity<?> postUser(UserDto UserDto);
+    User getUserByUsername(String username);
+    ResponseEntity<?> addUser(UserDto UserDto);
 }

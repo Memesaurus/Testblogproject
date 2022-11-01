@@ -28,6 +28,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> postUser(@RequestBody UserDto UserDto) {
         System.out.println(UserDto.toString());
-        return userService.postUser(UserDto);
+        return userService.addUser(UserDto);
     }
 }

@@ -24,10 +24,11 @@ class PostRepositoryTest {
     @AfterEach
     void tearDown() {
         test.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
-    void ShouldFindAllUsersByGivenUsername() {
+    void ShouldFindAllUserPostsByGivenUsername() {
         String username = "TestUser";
         String email = "TestUser@test.com";
         User user = new User(1L,

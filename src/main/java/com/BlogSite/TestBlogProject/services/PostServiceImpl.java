@@ -16,7 +16,7 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private PostRepository postRepository;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Override
     public List<Post> getPostsByUsername(String username) {
@@ -29,10 +29,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<?> postPost(PostDto postDto) {
+    public ResponseEntity<?> addPost(PostDto postDto) {
+        User user = userService.getUserByUsername(postDto.getUsername());
+        if (user == null)
+            return ResponseEntity.badRequest().body("USERNOTFOUND");
         Post post = new Post();
         post.setBody(postDto.getBody());
-        User user = userRepository.findByUsername(postDto.getUsername());
         post.setUser(user);
         post = postRepository.save(post);
         return ResponseEntity.ok().body(post);
