@@ -4,24 +4,17 @@ import com.BlogSite.TestBlogProject.Dto.PostDto;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
-import com.BlogSite.TestBlogProject.repositories.UserRepository;
-import lombok.Data;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceImplTest {
@@ -63,7 +56,9 @@ class PostServiceImplTest {
         String username = "Test";
         String email = "TestUser@test.com";
         String body = "Test";
-        User expectedUser = new User(1L, username, email);
+        User expectedUser = new User(1L,
+                username,
+                email);
         Post expectedPost = new Post(null,
                 body,
                 expectedUser);
@@ -82,7 +77,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    void addPost_ShouldReturnResponseEntityBADREQUEST(){
+    void addPost_ShouldReturnResponseEntityBADREQUEST() {
         PostDto postDto = new PostDto();
         postDto.setUsername(null);
         postDto.setBody(null);

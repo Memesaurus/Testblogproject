@@ -72,7 +72,6 @@ class UserServiceImplTest {
     void addUser_ShouldReturnResponseEntityBADREQUEST(){
         UserDto userDto = new UserDto();
         userDto.setUsername("Test");
-        userDto.setEmail(null);
         ResponseEntity<?> expectedResponse =
                 ResponseEntity.badRequest().body("ALRDY_EXISTS");
 
