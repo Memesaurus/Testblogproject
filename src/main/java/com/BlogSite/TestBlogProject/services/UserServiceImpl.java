@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> addUser(UserDto userDto) {
         if (userRepository.findByUsername(userDto.getUsername()).isPresent())
-            return ResponseEntity.badRequest().body("ALRDY_EXISTS");
+            return ResponseEntity.badRequest().body("ALREADY_EXISTS");
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());

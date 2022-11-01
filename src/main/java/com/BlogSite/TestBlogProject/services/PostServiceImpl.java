@@ -32,7 +32,7 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<?> addPost(PostDto postDto) {
         User user = userService.getUserByUsername(postDto.getUsername());
         if (user == null)
-            return ResponseEntity.badRequest().body("USERNOTFOUND");
+            return ResponseEntity.badRequest().body("USER_NOT_FOUND");
         Post post = new Post();
         post.setBody(postDto.getBody());
         post.setUser(user);

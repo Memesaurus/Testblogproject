@@ -28,11 +28,6 @@ class PostServiceImplTest {
     @Test
     void getPostsByUsername_ShouldGetPostsByUsername() {
         String username = "TestUser";
-        String email = "TestUser@test.com";
-        User user = new User(1L,
-                username,
-                email
-        );
 
         test.getPostsByUsername(username);
 
@@ -82,7 +77,7 @@ class PostServiceImplTest {
         postDto.setUsername(null);
         postDto.setBody(null);
         ResponseEntity<?> expectedResponse =
-                ResponseEntity.badRequest().body("USERNOTFOUND");
+                ResponseEntity.badRequest().body("USER_NOT_FOUND");
 
         ResponseEntity<?> response = test.addPost(postDto);
 

@@ -16,13 +16,8 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @AfterEach
-    void tearDown() {
-        userRepository.deleteAll();
-    }
-
     @Test
-    void ShouldFindUserByGivenUsername() {
+    void shouldFindUserByGivenUsername() {
         String username = "Test";
         String email = "Test@test.com";
         User expected = new User(1L,

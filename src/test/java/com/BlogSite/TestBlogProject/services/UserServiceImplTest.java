@@ -73,7 +73,7 @@ class UserServiceImplTest {
         UserDto userDto = new UserDto();
         userDto.setUsername("Test");
         ResponseEntity<?> expectedResponse =
-                ResponseEntity.badRequest().body("ALRDY_EXISTS");
+                ResponseEntity.badRequest().body("ALREADY_EXISTS");
 
         doReturn(Optional.of(new User())).when(userRepository).findByUsername(userDto.getUsername());
         ResponseEntity<?> response = test.addUser(userDto);
