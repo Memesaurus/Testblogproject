@@ -21,11 +21,11 @@ class PostRepositoryTest {
     private UserRepository userRepository;
 
     @Test
-    @Disabled
     void shouldFindAllUserPostsByGivenUsername() {
+        Long userId = 1L;
         String username = "TestUser";
         String email = "TestUser@test.com";
-        User user = new User(1L,
+        User user = new User(userId,
                 username,
                 email
         );
@@ -41,7 +41,7 @@ class PostRepositoryTest {
         test.save(postone);
         test.save(posttwo);
 
-        List<Post> result = test.findAllByUser_id(username);
+        List<Post> result = test.findAllByUser_id(userId);
 
         List<Post> expected = new ArrayList<>();
         expected.add(postone);

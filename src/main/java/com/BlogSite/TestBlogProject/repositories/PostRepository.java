@@ -10,8 +10,5 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("select o from Post o " +
-            "JOIN o.user u " +
-            "where u.username = :username")
-    List<Post> findAllByUser_id(@Param("username") String username);
+    List<Post> findAllByUser_id(Long id);
 }

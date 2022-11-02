@@ -14,8 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceImplTest {
@@ -29,15 +28,22 @@ class PostServiceImplTest {
     @Test
     void getPostsByUsername_ShouldGetPostsByUsername() {
         String username = "TestUser";
+        Long expectedId = 1L;
+        Result<User> mockResult = new Result<>();
+        User mockUser = new User(expectedId,
+                username,
+                "TestEmail");
+        mockResult.setData(mockUser);
 
+        doReturn(mockResult).when(userService).getUserByUsername(username);
         test.getPostsByUsername(username);
 
-        ArgumentCaptor<String> stringArgumentCaptor =
-                ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Long> longArgumentCaptor =
+                ArgumentCaptor.forClass(Long.class);
         verify(postRepository)
-                .findAllByUser_id(stringArgumentCaptor.capture());
-        String capturedUsername = stringArgumentCaptor.getValue();
-        assertThat(capturedUsername).isEqualTo(username);
+                .findAllByUser_id(longArgumentCaptor.capture());
+        Long capturedId = longArgumentCaptor.getValue();
+        assertThat(capturedId).isEqualTo(expectedId);
     }
 
     @Test
