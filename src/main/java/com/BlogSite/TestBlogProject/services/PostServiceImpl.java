@@ -31,17 +31,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Result<?> addPost(PostDto postDto) {
-        Result<ResponseEntity<?>> result = new Result<>();
+    public ResponseEntity<?> addPost(PostDto postDto) {
         Result<User> userResult = userService.getUserByUsername(postDto.getUsername());
         if (userResult.getError() == ErrorCode.USER_NOT_FOUND) {
-            return userResult;
+            return ResponseEntity.badRequest().body(userResult.getError());
         }
         Post post = new Post();
         post.setBody(postDto.getBody());
         post.setUser(userResult.getData());
         post = postRepository.save(post);
-        result.setData(ResponseEntity.ok().body(post));
-        return result;
+        return ResponseEntity.ok().body(post);
     }
 }

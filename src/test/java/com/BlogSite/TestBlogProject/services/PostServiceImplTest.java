@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -92,8 +93,8 @@ class PostServiceImplTest {
         mockResult.setError(expectedResponse);
 
         doReturn(mockResult).when(userService).getUserByUsername(username);
-        ErrorCode response = test.addPost(postDto).getError();
+        ResponseEntity<?> response = test.addPost(postDto);
 
-        assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse);
+        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
 }

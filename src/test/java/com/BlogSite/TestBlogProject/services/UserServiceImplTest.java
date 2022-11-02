@@ -10,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -73,8 +74,8 @@ class UserServiceImplTest {
         ErrorCode expectedResponse = ErrorCode.ALREADY_EXISTS;
 
         doReturn(Optional.of(new User())).when(userRepository).findByUsername(userDto.getUsername());
-        ErrorCode response = test.addUser(userDto).getError();
+        ResponseEntity<?> response = test.addUser(userDto);
 
-        assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse);
+        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
 }
