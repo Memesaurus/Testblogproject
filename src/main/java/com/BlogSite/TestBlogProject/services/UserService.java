@@ -14,5 +14,5 @@ public interface UserService {
 
     Result<User> getUserByUsername(String username);
 
-    ResponseEntity<?> addUser(UserDto UserDto);
+    Result<User> addUser(UserDto UserDto);
 }

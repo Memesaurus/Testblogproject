@@ -27,7 +27,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postPost(@RequestBody PostDto postDto) {
+    public Result<Post> postPost(@RequestBody PostDto postDto) {
         return postService.addPost(postDto);
     }
 }

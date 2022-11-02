@@ -93,8 +93,8 @@ class PostServiceImplTest {
         mockResult.setError(expectedResponse);
 
         doReturn(mockResult).when(userService).getUserByUsername(username);
-        ResponseEntity<?> response = test.addPost(postDto);
+        Result<Post> response = test.addPost(postDto);
 
-        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedResponse);
+        assertThat(response.getError()).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
 }

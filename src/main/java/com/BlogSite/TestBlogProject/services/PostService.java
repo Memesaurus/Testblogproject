@@ -12,5 +12,5 @@ public interface PostService {
 
     List<Post> getAllPosts();
 
-    ResponseEntity<?> addPost(PostDto postDto);
+    Result<Post> addPost(PostDto postDto);
 }

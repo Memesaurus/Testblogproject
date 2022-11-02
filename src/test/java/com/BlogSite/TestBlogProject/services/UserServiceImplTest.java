@@ -2,6 +2,7 @@ package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.Dto.UserDto;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
+import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -74,8 +75,8 @@ class UserServiceImplTest {
         ErrorCode expectedResponse = ErrorCode.ALREADY_EXISTS;
 
         doReturn(Optional.of(new User())).when(userRepository).findByUsername(userDto.getUsername());
-        ResponseEntity<?> response = test.addUser(userDto);
+        Result<User> response = test.addUser(userDto);
 
-        assertThat(response.getBody()).usingRecursiveComparison().isEqualTo(expectedResponse);
+        assertThat(response.getError()).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
 }

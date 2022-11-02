@@ -46,14 +46,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> addUser(UserDto userDto) {
+    public Result<User> addUser(UserDto userDto) {
+        Result<User> result = new Result<>();
         if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
-            return ResponseEntity.badRequest().body(ErrorCode.ALREADY_EXISTS);
+            result.setError(ErrorCode.ALREADY_EXISTS);
+            return result;
         }
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user = userRepository.save(user);
-        return ResponseEntity.ok().body(user);
+        result.setData(user);
+        return result;
     }
 }
