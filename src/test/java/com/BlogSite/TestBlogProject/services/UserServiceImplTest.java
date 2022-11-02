@@ -1,17 +1,15 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.Dto.PostDto;
 import com.BlogSite.TestBlogProject.Dto.UserDto;
+import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
-import org.hibernate.type.TrueFalseType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -69,14 +67,13 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addUser_ShouldReturnResponseEntityBADREQUEST(){
+    void addUser_ShouldReturnResponseEntityBADREQUEST() {
         UserDto userDto = new UserDto();
         userDto.setUsername("Test");
-        ResponseEntity<?> expectedResponse =
-                ResponseEntity.badRequest().body("ALREADY_EXISTS");
+        ErrorCode expectedResponse = ErrorCode.ALREADY_EXISTS;
 
         doReturn(Optional.of(new User())).when(userRepository).findByUsername(userDto.getUsername());
-        ResponseEntity<?> response = test.addUser(userDto);
+        ErrorCode response = test.addUser(userDto).getError();
 
         assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse);
     }

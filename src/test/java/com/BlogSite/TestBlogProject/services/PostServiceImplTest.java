@@ -1,7 +1,9 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.Dto.PostDto;
+import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Post;
+import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -57,11 +58,13 @@ class PostServiceImplTest {
         Post expectedPost = new Post(null,
                 body,
                 expectedUser);
+        Result<User> mockResult = new Result<>();
+        mockResult.setData(expectedUser);
         PostDto postDto = new PostDto();
         postDto.setBody(body);
         postDto.setUsername(username);
 
-        doReturn(expectedUser).when(userService).getUserByUsername(username);
+        doReturn(mockResult).when(userService).getUserByUsername(username);
         test.addPost(postDto);
 
         ArgumentCaptor<Post> postArgumentCaptor =
@@ -73,13 +76,17 @@ class PostServiceImplTest {
 
     @Test
     void addPost_ShouldReturnResponseEntityBADREQUEST() {
+        String username = null;
+        String body = null;
         PostDto postDto = new PostDto();
-        postDto.setUsername(null);
-        postDto.setBody(null);
-        ResponseEntity<?> expectedResponse =
-                ResponseEntity.badRequest().body("USER_NOT_FOUND");
+        postDto.setUsername(username);
+        postDto.setBody(body);
+        ErrorCode expectedResponse = ErrorCode.USER_NOT_FOUND;
+        Result<User> mockResult = new Result<>();
+        mockResult.setError(expectedResponse);
 
-        ResponseEntity<?> response = test.addPost(postDto);
+        doReturn(mockResult).when(userService).getUserByUsername(username);
+        ErrorCode response = test.addPost(postDto).getError();
 
         assertThat(response).usingRecursiveComparison().isEqualTo(expectedResponse);
     }

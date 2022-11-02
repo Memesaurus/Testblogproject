@@ -1,6 +1,7 @@
 package com.BlogSite.TestBlogProject.controllers;
 
 import com.BlogSite.TestBlogProject.Dto.UserDto;
+import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +22,12 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getOneUser(@PathVariable Long id) {
+    public Result<User> getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @PostMapping
-    public ResponseEntity<?> postUser(@RequestBody UserDto UserDto) {
-        System.out.println(UserDto.toString());
+    public Result<?> postUser(@RequestBody UserDto UserDto) {
         return userService.addUser(UserDto);
     }
 }

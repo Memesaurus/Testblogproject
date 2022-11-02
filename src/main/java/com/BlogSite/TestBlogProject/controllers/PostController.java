@@ -2,6 +2,7 @@ package com.BlogSite.TestBlogProject.controllers;
 
 import com.BlogSite.TestBlogProject.Dto.PostDto;
 import com.BlogSite.TestBlogProject.models.Post;
+import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<?> postPost(@RequestBody PostDto postDto) {
+    public Result<?> postPost(@RequestBody PostDto postDto) {
         return postService.addPost(postDto);
     }
 }

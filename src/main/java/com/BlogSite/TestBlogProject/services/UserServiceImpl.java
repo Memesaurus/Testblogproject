@@ -1,6 +1,8 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.Dto.UserDto;
+import com.BlogSite.TestBlogProject.models.ErrorCode;
+import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,23 +22,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public Result<User> getUser(Long id) {
+        Result<User> result = new Result<>();
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null) {
+            result.setError(ErrorCode.USER_NOT_FOUND);
+            return result;
+        }
+        result.setData(user);
+        return result;
     }
 
     @Override
-    public User getUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+    public Result<User> getUserByUsername(String username) {
+        Result<User> result = new Result<>();
+        User user = userRepository.findByUsername(username).orElse(null);
+        if(user == null) {
+            result.setError(ErrorCode.USER_NOT_FOUND);
+            return result;
+        }
+        result.setData(user);
+        return result;
     }
 
     @Override
-    public ResponseEntity<?> addUser(UserDto userDto) {
-        if (userRepository.findByUsername(userDto.getUsername()).isPresent())
-            return ResponseEntity.badRequest().body("ALREADY_EXISTS");
+    public Result<ResponseEntity<?>> addUser(UserDto userDto) {
+        Result<ResponseEntity<?>> result = new Result<>();
+        if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+            result.setError(ErrorCode.ALREADY_EXISTS);
+            return result;
+        }
         User user = new User();
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
         user = userRepository.save(user);
-        return ResponseEntity.ok().body(user);
+        result.setData(ResponseEntity.ok().body(user));
+        return result;
     }
 }
