@@ -28,23 +28,23 @@ class PostRepositoryTest {
                 username,
                 email
         );
-        Post postone = new Post(1L,
+        Post postOne = new Post(1L,
                 "Test1",
                 user
         );
-        Post posttwo = new Post(2L,
+        Post postTwo = new Post(2L,
                 "Test2",
                 user
         );
         userRepository.save(user);
-        postRepository.save(postone);
-        postRepository.save(posttwo);
+        postRepository.save(postOne);
+        postRepository.save(postTwo);
 
-        List<Post> result = postRepository.findAllByUser_id(userId);
+        List<Post> result = postRepository.findAllById(userId);
 
         List<Post> expected = new ArrayList<>();
-        expected.add(postone);
-        expected.add(posttwo);
+        expected.add(postOne);
+        expected.add(postTwo);
         for (int i = 0; i < result.size(); i++) {
             assertThat(result.get(i)).usingRecursiveComparison().isEqualTo(expected.get(i));
         }

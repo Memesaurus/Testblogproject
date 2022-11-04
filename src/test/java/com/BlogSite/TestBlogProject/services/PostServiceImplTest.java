@@ -13,8 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -37,10 +37,9 @@ class PostServiceImplTest {
         Post post = new Post(null,
                 "Test",
                 user);
-        List<Post> expectedList = new ArrayList<>();
-        expectedList.add(post);
+        List<Post> expectedList = List.of(post);
 
-        doReturn(expectedList)
+        doReturn(Optional.of(expectedList))
                 .when(postRepository).findByUserUsername(username);
         List<Post> actualList = postService.getPostsByUsername(username).getData();
 
@@ -52,7 +51,7 @@ class PostServiceImplTest {
         ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
         String username = "Test";
 
-        doReturn(null)
+        doReturn(Optional.empty())
                 .when(postRepository).findByUserUsername(username);
         ErrorCode actualError = postService.getPostsByUsername(username).getError();
 

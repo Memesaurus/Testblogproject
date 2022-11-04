@@ -11,10 +11,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -27,8 +27,15 @@ class UserServiceImplTest {
     @Test
     void getUsers_ShouldReturnAllUsers() {
         userService.getUsers();
+        User user = new User(1L,
+                "Test",
+                "Test");
+        List<User> expectedList = List.of(user);
 
-        verify(userRepository).findAll();
+        doReturn(expectedList).when(userRepository).findAll();
+        List<User> actualList = userService.getUsers();
+
+        Assertions.assertEquals(expectedList, actualList);
     }
 
     @Test

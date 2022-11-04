@@ -13,5 +13,5 @@ public interface UserService {
 
     Result<User> getUserByUsername(String username);
 
-    Result<User> addUser(UserDto UserDto);
+    Result<User> addUser(UserDto userDto);
 }

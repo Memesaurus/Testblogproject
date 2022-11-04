@@ -17,7 +17,7 @@ public class Post {
     private Long id;
     private String body;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id",
+    @JoinColumn(name = "userid",
             foreignKey = @ForeignKey(name = "USER_ID_FK"))
     private User user;
 }
