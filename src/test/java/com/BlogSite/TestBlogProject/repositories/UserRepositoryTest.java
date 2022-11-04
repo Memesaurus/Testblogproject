@@ -1,7 +1,6 @@
 package com.BlogSite.TestBlogProject.repositories;
 
 import com.BlogSite.TestBlogProject.models.User;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,7 +17,7 @@ class UserRepositoryTest {
     void shouldFindUserByGivenUsername() {
         String username = "Test";
         String email = "Test@test.com";
-        User expected = new User(1L,
+        User expected = new User(2L,
                 username,
                 email
         );

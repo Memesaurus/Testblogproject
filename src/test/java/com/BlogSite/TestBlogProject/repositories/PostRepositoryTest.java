@@ -2,7 +2,6 @@ package com.BlogSite.TestBlogProject.repositories;
 
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.User;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PostRepositoryTest {
 
     @Autowired
-    private PostRepository test;
+    private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -29,25 +28,25 @@ class PostRepositoryTest {
                 username,
                 email
         );
-        Post postone = new Post(1L,
+        Post postOne = new Post(1L,
                 "Test1",
                 user
         );
-        Post posttwo = new Post(2L,
+        Post postTwo = new Post(2L,
                 "Test2",
                 user
         );
         userRepository.save(user);
-        test.save(postone);
-        test.save(posttwo);
+        postRepository.save(postOne);
+        postRepository.save(postTwo);
 
-        List<Post> result = test.findAllByUser_id(userId);
+        List<Post> result = postRepository.findByUserId(userId);
 
         List<Post> expected = new ArrayList<>();
-        expected.add(postone);
-        expected.add(posttwo);
+        expected.add(postOne);
+        expected.add(postTwo);
         for (int i = 0; i < result.size(); i++) {
             assertThat(result.get(i)).usingRecursiveComparison().isEqualTo(expected.get(i));
         }
- }
+    }
 }
