@@ -45,9 +45,9 @@ class PostServiceImplTest {
         ArgumentCaptor<Long> longArgumentCaptor =
                 ArgumentCaptor.forClass(Long.class);
         verify(postRepository)
-                .findAllByUserid(longArgumentCaptor.capture());
+                .findAllByUser_id(longArgumentCaptor.capture());
         Long capturedId = longArgumentCaptor.getValue();
-        assertThat(capturedId).isEqualTo(expectedId);
+        Assertions.assertEquals(expectedId, capturedId);
     }
 
     @Test

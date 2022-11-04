@@ -21,12 +21,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public Result<List<Post>> getPostsByUsername(String username) {
         Result<List<Post>> result = new Result<>();
-        User user = userService.getUserByUsername(username).getData();
-        if (user == null) {
+        List<Post> data = postRepository.findByUserUsername(username);
+        if (data.isEmpty())
             result.setError(ErrorCode.USER_NOT_FOUND);
-            return result;
-        }
-        result.setData(postRepository.findAllByUserid(user.getId()));
+        else
+            result.setData(data);
         return result;
     }
 

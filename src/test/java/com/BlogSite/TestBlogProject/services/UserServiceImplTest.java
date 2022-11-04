@@ -61,6 +61,8 @@ class UserServiceImplTest {
 
     @Test
     void addUser_ShouldSaveUser() {
+        //TEST OUTPUT ALSO KEKL
+        // мокать возврат репозитория
         String username = "Test";
         String email = "email";
         UserDto userDto = new UserDto();
