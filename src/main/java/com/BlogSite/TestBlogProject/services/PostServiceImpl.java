@@ -26,7 +26,7 @@ public class PostServiceImpl implements PostService {
             result.setError(ErrorCode.USER_NOT_FOUND);
             return result;
         }
-        result.setData(postRepository.findAllByUser_id(user.getId()));
+        result.setData(postRepository.findAllByUserid(user.getId()));
         return result;
     }
 

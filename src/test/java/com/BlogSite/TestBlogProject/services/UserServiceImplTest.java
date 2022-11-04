@@ -24,11 +24,11 @@ class UserServiceImplTest {
     @Mock
     private UserRepository userRepository;
     @InjectMocks
-    private UserServiceImpl test;
+    private UserServiceImpl userService;
 
     @Test
     void getUsers_ShouldReturnAllUsers() {
-        test.getUsers();
+        userService.getUsers();
 
         verify(userRepository).findAll();
     }
@@ -37,7 +37,7 @@ class UserServiceImplTest {
     void getUser_ShouldGetUserById() {
         Long id = 1L;
 
-        test.getUser(id);
+        userService.getUser(id);
 
         ArgumentCaptor<Long> longArgumentCaptor =
                 ArgumentCaptor.forClass(Long.class);
@@ -50,7 +50,7 @@ class UserServiceImplTest {
     void getUserByUsername_ShouldGetUserByUsername() {
         String username = "Test";
 
-        test.getUserByUsername(username);
+        userService.getUserByUsername(username);
 
         ArgumentCaptor<String> argumentCaptor =
                 ArgumentCaptor.forClass(String.class);
@@ -71,7 +71,7 @@ class UserServiceImplTest {
                 email
         );
 
-        test.addUser(userDto);
+        userService.addUser(userDto);
 
         ArgumentCaptor<User> userArgumentCaptor =
                 ArgumentCaptor.forClass(User.class);
@@ -87,7 +87,7 @@ class UserServiceImplTest {
         ErrorCode expectedResponse = ErrorCode.ALREADY_EXISTS;
 
         doReturn(Optional.of(new User())).when(userRepository).findByUsername(userDto.getUsername());
-        Result<User> response = test.addUser(userDto);
+        Result<User> response = userService.addUser(userDto);
 
         assertThat(response.getError()).usingRecursiveComparison().isEqualTo(expectedResponse);
     }

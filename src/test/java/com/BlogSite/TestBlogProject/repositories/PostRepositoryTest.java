@@ -2,7 +2,6 @@ package com.BlogSite.TestBlogProject.repositories;
 
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.User;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -41,7 +40,7 @@ class PostRepositoryTest {
         test.save(postone);
         test.save(posttwo);
 
-        List<Post> result = test.findAllByUser_id(userId);
+        List<Post> result = test.findAllByUserid(userId);
 
         List<Post> expected = new ArrayList<>();
         expected.add(postone);

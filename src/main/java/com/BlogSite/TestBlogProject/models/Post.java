@@ -10,6 +10,7 @@ import javax.persistence.*;
 @Table(name = "posts")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

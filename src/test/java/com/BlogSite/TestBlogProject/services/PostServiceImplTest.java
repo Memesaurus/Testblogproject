@@ -6,6 +6,7 @@ import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -13,8 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class PostServiceImplTest {
@@ -23,7 +27,7 @@ class PostServiceImplTest {
     @Mock
     private PostRepository postRepository;
     @InjectMocks
-    private PostServiceImpl test;
+    private PostServiceImpl postService;
 
     @Test
     void getPostsByUsername_ShouldGetPostsByUsername() {
@@ -36,19 +40,19 @@ class PostServiceImplTest {
         mockResult.setData(mockUser);
 
         doReturn(mockResult).when(userService).getUserByUsername(username);
-        test.getPostsByUsername(username);
+        Result<List<Post>> result = postService.getPostsByUsername(username);
 
         ArgumentCaptor<Long> longArgumentCaptor =
                 ArgumentCaptor.forClass(Long.class);
         verify(postRepository)
-                .findAllByUser_id(longArgumentCaptor.capture());
+                .findAllByUserid(longArgumentCaptor.capture());
         Long capturedId = longArgumentCaptor.getValue();
         assertThat(capturedId).isEqualTo(expectedId);
     }
 
     @Test
     void getAllPosts_ShouldGetAllPosts() {
-        test.getAllPosts();
+        postService.getAllPosts();
 
         verify(postRepository).findAll();
     }
@@ -71,13 +75,13 @@ class PostServiceImplTest {
         postDto.setUsername(username);
 
         doReturn(mockResult).when(userService).getUserByUsername(username);
-        test.addPost(postDto);
+        postService.addPost(postDto);
 
         ArgumentCaptor<Post> postArgumentCaptor =
                 ArgumentCaptor.forClass(Post.class);
         verify(postRepository).save(postArgumentCaptor.capture());
         Post capturedPost = postArgumentCaptor.getValue();
-        assertThat(capturedPost).usingRecursiveComparison().isEqualTo(expectedPost);
+        Assertions.assertEquals(expectedPost, capturedPost);
     }
 
     @Test
@@ -92,7 +96,7 @@ class PostServiceImplTest {
         mockResult.setError(expectedResponse);
 
         doReturn(mockResult).when(userService).getUserByUsername(username);
-        Result<Post> response = test.addPost(postDto);
+        Result<Post> response = postService.addPost(postDto);
 
         assertThat(response.getError()).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
