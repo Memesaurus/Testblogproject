@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.Dto.PostDto;
+import com.BlogSite.TestBlogProject.dto.PostDto;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.Result;
@@ -12,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.*;
@@ -82,7 +81,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    void addPost_ShouldReturnResponseEntityBADREQUEST() {
+    void addPost_ShouldReturnErrorCode() {
         String username = null;
         String body = null;
         PostDto postDto = new PostDto();

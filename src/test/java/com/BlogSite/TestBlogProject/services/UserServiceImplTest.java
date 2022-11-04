@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.Dto.UserDto;
+import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
@@ -11,7 +11,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
 
@@ -48,6 +47,19 @@ class UserServiceImplTest {
     }
 
     @Test
+    void getUserByUsername_ShouldGetUserByUsername() {
+        String username = "Test";
+
+        test.getUserByUsername(username);
+
+        ArgumentCaptor<String> argumentCaptor =
+                ArgumentCaptor.forClass(String.class);
+        verify(userRepository).findByUsername(argumentCaptor.capture());
+        String result = argumentCaptor.getValue();
+        assertThat(result).isEqualTo(username);
+    }
+
+    @Test
     void addUser_ShouldSaveUser() {
         String username = "Test";
         String email = "email";
@@ -69,7 +81,7 @@ class UserServiceImplTest {
     }
 
     @Test
-    void addUser_ShouldReturnResponseEntityBADREQUEST() {
+    void addUser_ShouldReturnErrorCode() {
         UserDto userDto = new UserDto();
         userDto.setUsername("Test");
         ErrorCode expectedResponse = ErrorCode.ALREADY_EXISTS;

@@ -1,13 +1,12 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.Dto.PostDto;
+import com.BlogSite.TestBlogProject.dto.PostDto;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +19,15 @@ public class PostServiceImpl implements PostService {
     private UserService userService;
 
     @Override
-    public List<Post> getPostsByUsername(String username) {
+    public Result<List<Post>> getPostsByUsername(String username) {
+        Result<List<Post>> result = new Result<>();
         User user = userService.getUserByUsername(username).getData();
-        return postRepository.findAllByUser_id(user.getId());
+        if (user == null) {
+            result.setError(ErrorCode.USER_NOT_FOUND);
+            return result;
+        }
+        result.setData(postRepository.findAllByUser_id(user.getId()));
+        return result;
     }
 
     @Override
