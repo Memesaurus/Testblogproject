@@ -24,11 +24,10 @@ public class UserServiceImpl implements UserService {
     public Result<User> getUser(Long id) {
         Result<User> result = new Result<>();
         User user = userRepository.findById(id).orElse(null);
-        if(user == null) {
+        if (user == null)
             result.setError(ErrorCode.USER_NOT_FOUND);
-            return result;
-        }
-        result.setData(user);
+        else
+            result.setData(user);
         return result;
     }
 
@@ -36,26 +35,25 @@ public class UserServiceImpl implements UserService {
     public Result<User> getUserByUsername(String username) {
         Result<User> result = new Result<>();
         User user = userRepository.findByUsername(username).orElse(null);
-        if(user == null) {
+        if (user == null)
             result.setError(ErrorCode.USER_NOT_FOUND);
-            return result;
-        }
-        result.setData(user);
+        else
+            result.setData(user);
         return result;
     }
 
     @Override
     public Result<User> addUser(UserDto userDto) {
         Result<User> result = new Result<>();
-        if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(userDto.getUsername()).isPresent())
             result.setError(ErrorCode.ALREADY_EXISTS);
-            return result;
+        else {
+            User user = new User();
+            user.setUsername(userDto.getUsername());
+            user.setEmail(userDto.getEmail());
+            user = userRepository.save(user);
+            result.setData(user);
         }
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user = userRepository.save(user);
-        result.setData(user);
         return result;
     }
 }

@@ -9,14 +9,13 @@ import com.BlogSite.TestBlogProject.repositories.PostRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -31,23 +30,33 @@ class PostServiceImplTest {
 
     @Test
     void getPostsByUsername_ShouldGetPostsByUsername() {
-        String username = "TestUser";
-        Long expectedId = 1L;
-        Result<User> mockResult = new Result<>();
-        User mockUser = new User(expectedId,
+        String username = "Test";
+        User user = new User(null,
                 username,
-                "TestEmail");
-        mockResult.setData(mockUser);
+                null);
+        Post post = new Post(null,
+                "Test",
+                user);
+        List<Post> expectedList = new ArrayList<>();
+        expectedList.add(post);
 
-        doReturn(mockResult).when(userService).getUserByUsername(username);
-        Result<List<Post>> result = postService.getPostsByUsername(username);
+        doReturn(expectedList)
+                .when(postRepository).findByUserUsername(username);
+        List<Post> actualList = postService.getPostsByUsername(username).getData();
 
-        ArgumentCaptor<Long> longArgumentCaptor =
-                ArgumentCaptor.forClass(Long.class);
-        verify(postRepository)
-                .findAllByUser_id(longArgumentCaptor.capture());
-        Long capturedId = longArgumentCaptor.getValue();
-        Assertions.assertEquals(expectedId, capturedId);
+        Assertions.assertEquals(expectedList, actualList);
+    }
+
+    @Test
+    void getPostsByUsername_ShouldReturnErrorCode() {
+        ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
+        String username = "Test";
+
+        doReturn(null)
+                .when(postRepository).findByUserUsername(username);
+        ErrorCode actualError = postService.getPostsByUsername(username).getError();
+
+        Assertions.assertEquals(expectedError, actualError);
     }
 
     @Test
@@ -60,44 +69,41 @@ class PostServiceImplTest {
     @Test
     void addPost_ShouldSavePost() {
         String username = "Test";
-        String email = "TestUser@test.com";
-        String body = "Test";
-        User expectedUser = new User(1L,
+        User expectedUser = new User();
+        Post mockPost = new Post(null,
                 username,
-                email);
-        Post expectedPost = new Post(null,
-                body,
+                expectedUser);
+        Post expectedPost = new Post(1L,
+                username,
                 expectedUser);
         Result<User> mockResult = new Result<>();
         mockResult.setData(expectedUser);
         PostDto postDto = new PostDto();
-        postDto.setBody(body);
+        postDto.setBody(username);
         postDto.setUsername(username);
 
-        doReturn(mockResult).when(userService).getUserByUsername(username);
-        postService.addPost(postDto);
+        doReturn(mockResult)
+                .when(userService).getUserByUsername(username);
+        doReturn(expectedPost)
+                .when(postRepository).save(mockPost);
+        Post actualPost = postService.addPost(postDto).getData();
 
-        ArgumentCaptor<Post> postArgumentCaptor =
-                ArgumentCaptor.forClass(Post.class);
-        verify(postRepository).save(postArgumentCaptor.capture());
-        Post capturedPost = postArgumentCaptor.getValue();
-        Assertions.assertEquals(expectedPost, capturedPost);
+        Assertions.assertEquals(expectedPost, actualPost);
     }
 
     @Test
     void addPost_ShouldReturnErrorCode() {
-        String username = null;
-        String body = null;
-        PostDto postDto = new PostDto();
-        postDto.setUsername(username);
-        postDto.setBody(body);
         ErrorCode expectedResponse = ErrorCode.USER_NOT_FOUND;
         Result<User> mockResult = new Result<>();
         mockResult.setError(expectedResponse);
+        PostDto postDto = new PostDto();
+        postDto.setUsername(null);
+        postDto.setBody(null);
 
-        doReturn(mockResult).when(userService).getUserByUsername(username);
-        Result<Post> response = postService.addPost(postDto);
+        doReturn(mockResult)
+                .when(userService).getUserByUsername(null);
+        ErrorCode actualResponse = postService.addPost(postDto).getError();
 
-        assertThat(response.getError()).usingRecursiveComparison().isEqualTo(expectedResponse);
+        Assertions.assertEquals(expectedResponse, actualResponse);
     }
 }

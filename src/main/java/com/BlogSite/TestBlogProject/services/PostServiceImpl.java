@@ -22,7 +22,7 @@ public class PostServiceImpl implements PostService {
     public Result<List<Post>> getPostsByUsername(String username) {
         Result<List<Post>> result = new Result<>();
         List<Post> data = postRepository.findByUserUsername(username);
-        if (data.isEmpty())
+        if (data == null)
             result.setError(ErrorCode.USER_NOT_FOUND);
         else
             result.setData(data);
@@ -38,15 +38,15 @@ public class PostServiceImpl implements PostService {
     public Result<Post> addPost(PostDto postDto) {
         Result<Post> result = new Result<>();
         Result<User> userResult = userService.getUserByUsername(postDto.getUsername());
-        if (userResult.getError() == ErrorCode.USER_NOT_FOUND) {
+        if (userResult.getError() == ErrorCode.USER_NOT_FOUND)
             result.setError(userResult.getError());
-            return result;
+        else {
+            Post post = new Post();
+            post.setBody(postDto.getBody());
+            post.setUser(userResult.getData());
+            post = postRepository.save(post);
+            result.setData(post);
         }
-        Post post = new Post();
-        post.setBody(postDto.getBody());
-        post.setUser(userResult.getData());
-        post = postRepository.save(post);
-        result.setData(post);
         return result;
     }
 }

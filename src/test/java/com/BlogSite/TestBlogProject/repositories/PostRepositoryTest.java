@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PostRepositoryTest {
 
     @Autowired
-    private PostRepository test;
+    private PostRepository postRepository;
     @Autowired
     private UserRepository userRepository;
 
@@ -37,10 +37,10 @@ class PostRepositoryTest {
                 user
         );
         userRepository.save(user);
-        test.save(postone);
-        test.save(posttwo);
+        postRepository.save(postone);
+        postRepository.save(posttwo);
 
-        List<Post> result = test.findAllByUser_id(userId);
+        List<Post> result = postRepository.findAllByUser_id(userId);
 
         List<Post> expected = new ArrayList<>();
         expected.add(postone);
@@ -48,5 +48,5 @@ class PostRepositoryTest {
         for (int i = 0; i < result.size(); i++) {
             assertThat(result.get(i)).usingRecursiveComparison().isEqualTo(expected.get(i));
         }
- }
+    }
 }
