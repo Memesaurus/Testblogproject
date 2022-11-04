@@ -40,7 +40,7 @@ class PostRepositoryTest {
         postRepository.save(postOne);
         postRepository.save(postTwo);
 
-        List<Post> result = postRepository.findAllById(userId);
+        List<Post> result = postRepository.findByUserId(userId);
 
         List<Post> expected = new ArrayList<>();
         expected.add(postOne);

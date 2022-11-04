@@ -1,6 +1,7 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.dto.UserDto;
+import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
@@ -21,6 +22,8 @@ class UserServiceImplTest {
 
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private UserMapper userMapper;
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -105,6 +108,8 @@ class UserServiceImplTest {
 
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(username);
+        doReturn(mockUser)
+                .when(userMapper).userDtoToUser(userDto);
         doReturn(expectedUser)
                 .when(userRepository).save(mockUser);
         User actualUser = userService.addUser(userDto).getData();

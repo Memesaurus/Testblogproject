@@ -1,6 +1,7 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.dto.PostDto;
+import com.BlogSite.TestBlogProject.mapper.PostMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.Result;
@@ -25,6 +26,8 @@ class PostServiceImplTest {
     private UserServiceImpl userService;
     @Mock
     private PostRepository postRepository;
+    @Mock
+    private PostMapper postMapper;
     @InjectMocks
     private PostServiceImpl postService;
 
@@ -83,6 +86,8 @@ class PostServiceImplTest {
 
         doReturn(mockResult)
                 .when(userService).getUserByUsername(username);
+        doReturn(mockPost)
+                .when(postMapper).postDtoToPost(postDto);
         doReturn(expectedPost)
                 .when(postRepository).save(mockPost);
         Post actualPost = postService.addPost(postDto).getData();

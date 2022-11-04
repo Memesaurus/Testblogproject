@@ -26,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Result<User> postUser(@RequestBody UserDto UserDto) {
-        return userService.addUser(UserDto);
+    public Result<User> postUser(@RequestBody UserDto userDto) {
+        return userService.addUser(userDto);
     }
 }

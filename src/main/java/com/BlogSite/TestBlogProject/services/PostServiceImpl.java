@@ -1,6 +1,7 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.dto.PostDto;
+import com.BlogSite.TestBlogProject.mapper.PostMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.Result;
@@ -17,6 +18,8 @@ public class PostServiceImpl implements PostService {
     private PostRepository postRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private PostMapper postMapper;
 
     @Override
     public Result<List<Post>> getPostsByUsername(String username) {
@@ -39,9 +42,7 @@ public class PostServiceImpl implements PostService {
         if (userResult.getError() == ErrorCode.USER_NOT_FOUND) {
             result.setError(userResult.getError());
         } else {
-            Post post = new Post();
-            post.setBody(postDto.getBody());
-            post.setUser(userResult.getData());
+            Post post = postMapper.postDtoToPost(postDto);
             post = postRepository.save(post);
             result.setData(post);
         }

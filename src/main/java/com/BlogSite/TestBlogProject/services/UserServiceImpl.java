@@ -1,6 +1,7 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.dto.UserDto;
+import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
@@ -14,6 +15,8 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public List<User> getUsers() {
@@ -44,9 +47,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
             result.setError(ErrorCode.ALREADY_EXISTS);
         } else {
-            User user = new User();
-            user.setUsername(userDto.getUsername());
-            user.setEmail(userDto.getEmail());
+            User user = userMapper.userDtoToUser(userDto);
             user = userRepository.save(user);
             result.setData(user);
         }
