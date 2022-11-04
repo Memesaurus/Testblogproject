@@ -2,19 +2,17 @@ package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
-import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 
@@ -36,61 +34,86 @@ class UserServiceImplTest {
     @Test
     void getUser_ShouldGetUserById() {
         Long id = 1L;
+        User expectedUser = new User(id,
+                "Test",
+                null);
 
-        userService.getUser(id);
+        doReturn(Optional.of(expectedUser))
+                .when(userRepository).findById(id);
+        User actualUser = userService.getUser(id).getData();
 
-        ArgumentCaptor<Long> longArgumentCaptor =
-                ArgumentCaptor.forClass(Long.class);
-        verify(userRepository).findById(longArgumentCaptor.capture());
-        Long result = longArgumentCaptor.getValue();
-        assertThat(result).isEqualTo(id);
+        Assertions.assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void getUser_ShouldReturnErrorCode() {
+        long id = 0;
+        ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
+
+        doReturn(Optional.empty())
+                .when(userRepository).findById(id);
+        ErrorCode actualError = userService.getUser(id).getError();
+
+        Assertions.assertEquals(expectedError, actualError);
     }
 
     @Test
     void getUserByUsername_ShouldGetUserByUsername() {
         String username = "Test";
+        User expectedUser = new User(1L,
+                username,
+                null);
 
-        userService.getUserByUsername(username);
+        doReturn(Optional.of(expectedUser))
+                .when(userRepository).findByUsername(username);
+        User actualUser = userService.getUserByUsername(username).getData();
 
-        ArgumentCaptor<String> argumentCaptor =
-                ArgumentCaptor.forClass(String.class);
-        verify(userRepository).findByUsername(argumentCaptor.capture());
-        String result = argumentCaptor.getValue();
-        assertThat(result).isEqualTo(username);
+        Assertions.assertEquals(expectedUser, actualUser);
+    }
+
+    @Test
+    void getUserByUsername_ShouldReturnErrorCode() {
+        String username = "";
+        ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
+
+        doReturn(Optional.empty())
+                .when(userRepository).findByUsername(username);
+        ErrorCode actualError = userService.getUserByUsername(username).getError();
+
+        Assertions.assertEquals(expectedError, actualError);
     }
 
     @Test
     void addUser_ShouldSaveUser() {
-        //TEST OUTPUT ALSO KEKL
-        // мокать возврат репозитория
         String username = "Test";
-        String email = "email";
-        UserDto userDto = new UserDto();
-        userDto.setEmail(email);
-        userDto.setUsername(username);
-        User expected = new User(null,
+        User expectedUser = new User(1L,
                 username,
-                email
-        );
+                username);
+        User mockUser = new User(null,
+                username,
+                username);
+        UserDto userDto = new UserDto();
+        userDto.setUsername(username);
+        userDto.setEmail(username);
 
-        userService.addUser(userDto);
+        doReturn(Optional.empty())
+                .when(userRepository).findByUsername(username);
+        doReturn(expectedUser)
+                .when(userRepository).save(mockUser);
+        User actualUser = userService.addUser(userDto).getData();
 
-        ArgumentCaptor<User> userArgumentCaptor =
-                ArgumentCaptor.forClass(User.class);
-        verify(userRepository).save(userArgumentCaptor.capture());
-        User capturedUser = userArgumentCaptor.getValue();
-        assertThat(capturedUser).usingRecursiveComparison().isEqualTo(expected);
+        Assertions.assertEquals(expectedUser, actualUser);
     }
 
     @Test
     void addUser_ShouldReturnErrorCode() {
         UserDto userDto = new UserDto();
-        userDto.setUsername("Test");
-        ErrorCode expectedResponse = ErrorCode.ALREADY_EXISTS;
+        ErrorCode expectedError = ErrorCode.ALREADY_EXISTS;
 
-        doReturn(Optional.of(new User())).when(userRepository).findByUsername(userDto.getUsername());
-        Result<User> response = userService.addUser(userDto);
+        doReturn(Optional.of(new User()))
+                .when(userRepository).findByUsername(userDto.getUsername());
+        ErrorCode actualError = userService.addUser(userDto).getError();
 
-        assertThat(response.getError()).usingRecursiveComparison().isEqualTo(expectedResponse);
+        Assertions.assertEquals(expectedError, actualError);
     }
 }
