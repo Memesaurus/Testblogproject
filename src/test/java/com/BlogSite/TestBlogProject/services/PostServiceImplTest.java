@@ -87,7 +87,7 @@ class PostServiceImplTest {
         doReturn(mockResult)
                 .when(userService).getUserByUsername(username);
         doReturn(mockPost)
-                .when(postMapper).postDtoToPost(postDto);
+                .when(postMapper).postDtoToPost(postDto, mockResult.getData());
         doReturn(expectedPost)
                 .when(postRepository).save(mockPost);
         Post actualPost = postService.addPost(postDto).getData();
