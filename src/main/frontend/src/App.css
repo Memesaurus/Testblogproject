@@ -1,0 +1,21 @@
+.flex-container {
+    display: flex;
+    position: fixed;
+    top: 25%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.usersTable {
+    font-size: small;
+    width: 50%;
+}
+
+.flex-child {
+    flex: none;
+}
+
+.flex-child:first-child {
+    margin-right: 20px;
+}
