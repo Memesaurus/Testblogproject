@@ -42,7 +42,7 @@ public class PostServiceImpl implements PostService {
         if (userResult.getError() == ErrorCode.USER_NOT_FOUND) {
             result.setError(userResult.getError());
         } else {
-            Post post = postMapper.postDtoToPost(postDto);
+            Post post = postMapper.postDtoToPost(postDto, userResult.getData());
             post = postRepository.save(post);
             result.setData(post);
         }
