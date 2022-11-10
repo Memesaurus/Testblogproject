@@ -1,0 +1,20 @@
+.postDiv {
+    font-size: large;
+    color: aliceblue;
+    background-color: #134794;
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+.postBodyDiv {
+    margin-left: 15px;
+    margin-top: 5px;
+    text-align: center;
+    width: 250px;
+    word-wrap: break-word;
+}
+
+.authorDiv {
+    font-size: small;
+    text-align: right;
+}
