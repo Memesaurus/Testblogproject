@@ -3,17 +3,21 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import InputGroup from 'react-bootstrap/InputGroup'
 import Post from './Post'
+import './Posts.css'
 
 export default function Posts({currentUser}) {
     const [posts, setPosts] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
     const postBodyRef = useRef()
-    
-    useEffect(() => {
-        fetch(`/api/posts/${currentUser}`)
-        .then(response => response.json())
-        .then(data => setPosts(data.data))
-    }, [currentUser])
 
+    useEffect(() => {
+        if (currentUser === undefined)
+            return setPosts([])
+        fetch(`/api/posts/user/${currentUser}`)
+            .then(response => response.json())
+            .then(data => setPosts(data.data))
+            .then(setIsLoading(false))
+    }, [currentUser])
 
     function onClickHandler() {
         const postBody = postBodyRef.current.value
@@ -33,20 +37,23 @@ export default function Posts({currentUser}) {
         if (result) {
             alert('PH')
         }
+        postBodyRef.current.value = null
     }
 
   return (
     <>
-    <div className="d-grid gap-2">
-    <Button variant='danger' onClick={onClickDangerHandler}>DELETE POSTS PH</Button>
+    <div>
+        <Button variant='danger' onClick={onClickDangerHandler}>DELETE POSTS PH</Button>
     </div>
-    <InputGroup>
-        <Form.Control placeholder='Your input' ref={postBodyRef}></Form.Control>
-        <Button onClick={onClickHandler}> Submit </Button>
-    </InputGroup>
-    {posts.map(post => {
-       return <Post key={post.id} post={post} />
-    })}
+    <div className='postsBody'>
+        <InputGroup>
+            <Form.Control placeholder='Your input' ref={postBodyRef}></Form.Control>
+            <Button onClick={onClickHandler}> Submit </Button>
+        </InputGroup>
+        {posts.map(post => {
+        return <Post key={post.id} post={post} />
+        })}
+    </div>
     </>
   )
 }

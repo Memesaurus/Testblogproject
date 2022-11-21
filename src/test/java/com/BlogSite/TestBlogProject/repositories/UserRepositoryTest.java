@@ -19,7 +19,10 @@ class UserRepositoryTest {
         String email = "Test@test.com";
         User expected = new User(2L,
                 username,
-                email
+                email,
+                username,
+                true,
+                null
         );
         userRepository.save(expected);
 

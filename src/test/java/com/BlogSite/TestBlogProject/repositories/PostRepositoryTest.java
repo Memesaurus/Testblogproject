@@ -26,7 +26,10 @@ class PostRepositoryTest {
         String email = "TestUser@test.com";
         User user = new User(userId,
                 username,
-                email
+                email,
+                username,
+                true,
+                null
         );
         Post postOne = new Post(1L,
                 "Test1",

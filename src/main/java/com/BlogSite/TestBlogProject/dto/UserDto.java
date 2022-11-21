@@ -1,5 +1,6 @@
 package com.BlogSite.TestBlogProject.dto;
 
+import com.BlogSite.TestBlogProject.models.Role;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -8,4 +9,6 @@ import java.io.Serializable;
 public class UserDto implements Serializable {
     private String username;
     private String email;
+    private String password;
+    private Role role;
 }

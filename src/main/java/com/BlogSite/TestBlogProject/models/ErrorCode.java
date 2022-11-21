@@ -1,6 +1,7 @@
 package com.BlogSite.TestBlogProject.models;
 
 public enum ErrorCode {
-    USER_NOT_FOUND,
-    ALREADY_EXISTS
+    NOT_FOUND,
+    ALREADY_EXISTS,
+    UNAUTHORISED
 }

@@ -3,6 +3,7 @@ package com.BlogSite.TestBlogProject.services;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
+import com.BlogSite.TestBlogProject.models.Roles;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -14,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.mockito.Mockito.doReturn;
 
@@ -32,7 +34,10 @@ class UserServiceImplTest {
         userService.getUsers();
         User user = new User(1L,
                 "Test",
-                "Test");
+                "Test",
+                "Test",
+                true,
+                null);
         List<User> expectedList = List.of(user);
 
         doReturn(expectedList).when(userRepository).findAll();
@@ -46,6 +51,9 @@ class UserServiceImplTest {
         Long id = 1L;
         User expectedUser = new User(id,
                 "Test",
+                "Test",
+                "Test",
+                true,
                 null);
 
         doReturn(Optional.of(expectedUser))
@@ -58,7 +66,7 @@ class UserServiceImplTest {
     @Test
     void getUser_ShouldReturnErrorCode() {
         long id = 0;
-        ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
+        ErrorCode expectedError = ErrorCode.NOT_FOUND;
 
         doReturn(Optional.empty())
                 .when(userRepository).findById(id);
@@ -72,6 +80,9 @@ class UserServiceImplTest {
         String username = "Test";
         User expectedUser = new User(1L,
                 username,
+                username,
+                username,
+                true,
                 null);
 
         doReturn(Optional.of(expectedUser))
@@ -84,7 +95,7 @@ class UserServiceImplTest {
     @Test
     void getUserByUsername_ShouldReturnErrorCode() {
         String username = "";
-        ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
+        ErrorCode expectedError = ErrorCode.NOT_FOUND;
 
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(username);
@@ -98,10 +109,16 @@ class UserServiceImplTest {
         String username = "Test";
         User expectedUser = new User(1L,
                 username,
-                username);
+                username,
+                username,
+                true,
+                null);
         User mockUser = new User(null,
                 username,
-                username);
+                username,
+                username,
+                true,
+                null);
         UserDto userDto = new UserDto();
         userDto.setUsername(username);
         userDto.setEmail(username);
@@ -109,7 +126,7 @@ class UserServiceImplTest {
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(username);
         doReturn(mockUser)
-                .when(userMapper).userDtoToUser(userDto);
+                .when(userMapper).userDtoToUser(userDto, Roles.ROLE_USER.getRole());
         doReturn(expectedUser)
                 .when(userRepository).save(mockUser);
         User actualUser = userService.addUser(userDto).getData();

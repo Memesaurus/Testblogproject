@@ -1,19 +1,11 @@
 .flex-container {
     display: flex;
-    position: fixed;
-    top: 25%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-}
-
-.usersTable {
-    font-size: small;
-    width: 50%;
 }
 
 .flex-child {
-    flex: none;
+    flex: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .flex-child:first-child {

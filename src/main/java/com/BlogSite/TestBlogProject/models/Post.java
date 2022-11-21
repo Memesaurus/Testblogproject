@@ -3,6 +3,7 @@ package com.BlogSite.TestBlogProject.models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,7 +17,7 @@ public class Post {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String body;
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "userid",
             foreignKey = @ForeignKey(name = "USER_ID_FK"))
     private User user;

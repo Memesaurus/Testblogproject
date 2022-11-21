@@ -9,6 +9,8 @@ import java.util.List;
 public interface UserService {
     List<User> getUsers();
 
+    String getAuthenticatedUserUsername();
+
     Result<User> getUser(Long id);
 
     Result<User> getUserByUsername(String username);

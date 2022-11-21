@@ -15,10 +15,13 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @GetMapping()
+    @GetMapping
     public List<User> getUsers() {
         return userService.getUsers();
     }
+
+    @GetMapping("/current")
+    public String getCurrentUserUsername() { return userService.getAuthenticatedUserUsername(); }
 
     @GetMapping("/{id}")
     public Result<User> getUser(@PathVariable Long id) {

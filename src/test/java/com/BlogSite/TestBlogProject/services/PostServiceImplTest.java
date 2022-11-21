@@ -36,6 +36,9 @@ class PostServiceImplTest {
         String username = "Test";
         User user = new User(null,
                 username,
+                username,
+                username,
+                true,
                 null);
         Post post = new Post(null,
                 "Test",
@@ -51,7 +54,7 @@ class PostServiceImplTest {
 
     @Test
     void getPostsByUsername_ShouldReturnErrorCode() {
-        ErrorCode expectedError = ErrorCode.USER_NOT_FOUND;
+        ErrorCode expectedError = ErrorCode.NOT_FOUND;
         String username = "Test";
 
         doReturn(Optional.empty())
@@ -97,7 +100,7 @@ class PostServiceImplTest {
 
     @Test
     void addPost_ShouldReturnErrorCode() {
-        ErrorCode expectedResponse = ErrorCode.USER_NOT_FOUND;
+        ErrorCode expectedResponse = ErrorCode.NOT_FOUND;
         Result<User> mockResult = new Result<>();
         mockResult.setError(expectedResponse);
         PostDto postDto = new PostDto();
