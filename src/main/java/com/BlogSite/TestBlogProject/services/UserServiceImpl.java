@@ -1,5 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
+import com.BlogSite.TestBlogProject.dto.LoginDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.*;
@@ -14,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -24,8 +24,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserMapper userMapper;
 
     @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    public List<UserDto> getUsers() {
+        List<User> userList = userRepository.findAll();
+        return userMapper.userListToUserDtoList(userList);
     }
 
     @Override
@@ -54,12 +55,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Result<User> addUser(UserDto userDto) {
+    public Result<User> addUser(LoginDto loginDto) {
         Result<User> result = new Result<>();
-        if (userRepository.findByUsername(userDto.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(loginDto.getUsername()).isPresent()) {
             result.setError(ErrorCode.ALREADY_EXISTS);
         } else {
-            User user = userMapper.userDtoToUser(userDto, Roles.ROLE_USER.getRole());
+            User user = userMapper.loginDtoToUser(loginDto, Roles.ROLE_USER.getRole());
             user.encryptPassword(user.getPassword());
             user = userRepository.save(user);
             result.setData(user);

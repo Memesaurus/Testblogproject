@@ -1,8 +1,10 @@
 package com.BlogSite.TestBlogProject.services;
 
+import com.BlogSite.TestBlogProject.dto.LoginDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
+import com.BlogSite.TestBlogProject.models.Role;
 import com.BlogSite.TestBlogProject.models.Roles;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
@@ -15,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.mockito.Mockito.doReturn;
 
@@ -31,17 +32,24 @@ class UserServiceImplTest {
 
     @Test
     void getUsers_ShouldReturnAllUsers() {
-        userService.getUsers();
+        Role role = new Role(1L, "ROLE_TEST");
         User user = new User(1L,
                 "Test",
                 "Test",
                 "Test",
                 true,
-                null);
-        List<User> expectedList = List.of(user);
+                role);
+        List<User> userList = List.of(user);
+        UserDto expectedUserDto = new UserDto();
+        expectedUserDto.setUsername("Test");
+        expectedUserDto.setRole(role);
+        List<UserDto> expectedList = List.of(expectedUserDto);
 
-        doReturn(expectedList).when(userRepository).findAll();
-        List<User> actualList = userService.getUsers();
+        doReturn(userList)
+                .when(userRepository).findAll();
+        doReturn(expectedList)
+                .when(userMapper).userListToUserDtoList(userList);
+        List<UserDto> actualList = userService.getUsers();
 
         Assertions.assertEquals(expectedList, actualList);
     }
@@ -119,29 +127,29 @@ class UserServiceImplTest {
                 username,
                 true,
                 null);
-        UserDto userDto = new UserDto();
-        userDto.setUsername(username);
-        userDto.setEmail(username);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsername(username);
+        loginDto.setEmail(username);
 
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(username);
         doReturn(mockUser)
-                .when(userMapper).userDtoToUser(userDto, Roles.ROLE_USER.getRole());
+                .when(userMapper).loginDtoToUser(loginDto, Roles.ROLE_USER.getRole());
         doReturn(expectedUser)
                 .when(userRepository).save(mockUser);
-        User actualUser = userService.addUser(userDto).getData();
+        User actualUser = userService.addUser(loginDto).getData();
 
         Assertions.assertEquals(expectedUser, actualUser);
     }
 
     @Test
     void addUser_ShouldReturnErrorCode() {
-        UserDto userDto = new UserDto();
+        LoginDto loginDto = new LoginDto();
         ErrorCode expectedError = ErrorCode.ALREADY_EXISTS;
 
         doReturn(Optional.of(new User()))
-                .when(userRepository).findByUsername(userDto.getUsername());
-        ErrorCode actualError = userService.addUser(userDto).getError();
+                .when(userRepository).findByUsername(loginDto.getUsername());
+        ErrorCode actualError = userService.addUser(loginDto).getError();
 
         Assertions.assertEquals(expectedError, actualError);
     }

@@ -16,5 +16,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where u.username = :username")
     Optional<List<Post>> findByUserUsername(@Param("username") String username);
 
+    Optional<List<Post>> findByUserUsernameAndIsActive(String username, Boolean active);
+
     List<Post> findByUserId(Long id);
 }

@@ -1,5 +1,6 @@
 package com.BlogSite.TestBlogProject.controllers;
 
+import com.BlogSite.TestBlogProject.dto.LoginDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
@@ -16,7 +17,7 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getUsers() {
+    public List<UserDto> getUsers() {
         return userService.getUsers();
     }
 
@@ -29,7 +30,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Result<User> postUser(@RequestBody UserDto userDto) {
-        return userService.addUser(userDto);
+    public Result<User> postUser(@RequestBody LoginDto loginDto) {
+        return userService.addUser(loginDto);
     }
 }

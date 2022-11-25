@@ -1,13 +1,5 @@
 .flex-container {
     display: flex;
-}
-
-.flex-child {
-    flex: flex;
     align-items: center;
     justify-content: center;
-}
-
-.flex-child:first-child {
-    margin-right: 20px;
 }

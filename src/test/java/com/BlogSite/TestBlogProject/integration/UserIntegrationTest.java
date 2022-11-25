@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.integration;
 
-import com.BlogSite.TestBlogProject.dto.UserDto;
+import com.BlogSite.TestBlogProject.dto.LoginDto;
 import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,15 +50,15 @@ class UserIntegrationTest {
     void addUser_ShouldAddUserToDataBase() throws Exception {
         Long id = 1L;
         String name = "Test";
-        UserDto userDto = new UserDto();
-        userDto.setEmail(name);
-        userDto.setUsername(name);
+        LoginDto loginDto = new LoginDto();
+        loginDto.setEmail(name);
+        loginDto.setUsername(name);
         User expectedUser = new User(id, name, name, name, true, null);
 
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userDto)))
+                        .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.error").isEmpty())
                 .andDo(print());

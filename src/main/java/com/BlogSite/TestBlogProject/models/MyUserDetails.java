@@ -1,6 +1,8 @@
 package com.BlogSite.TestBlogProject.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -8,6 +10,7 @@ import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor
+@Getter
 public class MyUserDetails implements UserDetails {
 
     private transient User user;

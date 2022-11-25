@@ -3,7 +3,6 @@ package com.BlogSite.TestBlogProject.controllers;
 import com.BlogSite.TestBlogProject.dto.PostDto;
 import com.BlogSite.TestBlogProject.models.Post;
 import com.BlogSite.TestBlogProject.models.Result;
-import com.BlogSite.TestBlogProject.models.User;
 import com.BlogSite.TestBlogProject.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +17,22 @@ public class PostController {
 
     @GetMapping("/user/{username}")
     public Result<List<Post>> getPostsByUsername(@PathVariable String username) {
-        return postService.getPostsByUsername(username);
+        return postService.getActivePostsByUserUsername(username);
     }
 
     @GetMapping("/admin")
     public List<Post> getAll() {
         return postService.getAllPosts();
+    }
+
+    @PostMapping("/{id}/like")
+    public Result<Post> changeUserLikeState(@PathVariable Long id) {
+        return postService.changeUserPostLikeState(id);
+    }
+
+    @GetMapping("/{id}/likeCount")
+    public Result<Long> getLikeCount(@PathVariable Long id) {
+        return postService.getLikeCountByPostId(id);
     }
 
     @PostMapping
@@ -43,6 +52,6 @@ public class PostController {
 
     @DeleteMapping("/user/{id}")
     public Result<Post> deleteCurrentUserPost(@PathVariable Long id) {
-        return postService.deleteUserPost(id);
+        return postService.hideUserPost(id);
     }
 }

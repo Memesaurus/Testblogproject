@@ -11,6 +11,6 @@ export default function LogoutButton({onLogoutFormClickHandler}) {
   }
 
   return (
-    <Button variant='dark' onClick={logoutConfirmationAlert}> Logout</Button>
+    <Button variant='dark' onClick={logoutConfirmationAlert}>Logout</Button>
   )
 }

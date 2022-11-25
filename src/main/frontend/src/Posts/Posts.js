@@ -5,19 +5,15 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import Post from './Post'
 import './Posts.css'
 
-export default function Posts({currentUser}) {
+export default function Posts({currentUserPage, loggedInUser}) {
     const [posts, setPosts] = useState([])
-    const [isLoading, setIsLoading] = useState(true)
     const postBodyRef = useRef()
 
     useEffect(() => {
-        if (currentUser === undefined)
-            return setPosts([])
-        fetch(`/api/posts/user/${currentUser}`)
+        fetch(`/api/posts/user/${currentUserPage}`)
             .then(response => response.json())
             .then(data => setPosts(data.data))
-            .then(setIsLoading(false))
-    }, [currentUser])
+    }, [currentUserPage])
 
     function onClickHandler() {
         const postBody = postBodyRef.current.value
@@ -26,34 +22,48 @@ export default function Posts({currentUser}) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({body: postBody, username: currentUser})
+            body: JSON.stringify({body: postBody, username: currentUserPage})
         })
         .then(response => response.json())
         .then(data => setPosts([...posts, data.data]))
     }
-    
-    function onClickDangerHandler() {
+
+    function deletePost(postId) {
+        fetch(`/api/posts/user/${postId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error != null) {
+                console.log(data.error)
+            }
+            else {
+                console.log(data.data)
+                setPosts(posts.filter(post => post.id != postId))
+            }
+        })
+    }
+
+    function onClickDeletePostHandler(id) {
         let result = window.confirm('Delete confirmation PH')
-        if (result) {
-            alert('PH')
-        }
         postBodyRef.current.value = null
+        if (result) {
+            deletePost(id)
+        }
     }
 
   return (
     <>
-    <div>
-        <Button variant='danger' onClick={onClickDangerHandler}>DELETE POSTS PH</Button>
-    </div>
-    <div className='postsBody'>
-        <InputGroup>
-            <Form.Control placeholder='Your input' ref={postBodyRef}></Form.Control>
-            <Button onClick={onClickHandler}> Submit </Button>
-        </InputGroup>
-        {posts.map(post => {
-        return <Post key={post.id} post={post} />
-        })}
-    </div>
+        <div className='postsBody'>
+            Posts of {currentUserPage}
+            <InputGroup>
+                <Form.Control placeholder='Your input' ref={postBodyRef}></Form.Control>
+                <Button onClick={onClickHandler}> Submit </Button>
+            </InputGroup>
+            {
+                posts.map(post => (<Post key={post.id} post={post} onClickDeletePostHandler={onClickDeletePostHandler} currentUserPage={currentUserPage} loggedInUser={loggedInUser}/>))
+            }
+        </div>
     </>
   )
-}
+}``

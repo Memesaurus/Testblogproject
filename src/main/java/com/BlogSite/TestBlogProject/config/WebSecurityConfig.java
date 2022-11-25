@@ -14,24 +14,23 @@ public class WebSecurityConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.cors().disable();
         http.formLogin()
                 .loginPage("/api/login")
+                .successForwardUrl("/api/login?success")
                 .permitAll()
                 .and().logout()
                 .logoutUrl("/api/logout")
-                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
+                .and().authorizeRequests()
+                .antMatchers("/api/admin/**")
+                .hasRole("ADMIN")
                 .and().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/**")
                 .permitAll()
                 .and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/posts/**")
-                .authenticated()
-                .and().authorizeRequests()
-                .antMatchers("/api/admin/**")
-                .hasRole("ADMIN");
+                .authenticated();
         return http.build();
     }
 }

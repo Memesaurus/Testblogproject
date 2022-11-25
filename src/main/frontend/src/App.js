@@ -2,37 +2,48 @@ import Posts from './Posts/Posts';
 import './App.css'
 import { useEffect, useState } from 'react';
 import OffCanvas from './OffCanvas'
-import { Toast, ToastContainer } from 'react-bootstrap';
+import { Container, Toast, ToastContainer } from 'react-bootstrap';
 
 
 function App() {
-  const [currentUser, setCurrentUser] = useState()
+  const [loggedInUser, setLoggedInUser] = useState(null)
+  const [currentUserPage, setCurrentUserPage] = useState()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [showError, setShowError] = useState(false)
   const toggleShowError = () => setShowError(!showError)
   const [showLogout, setShowLogout] = useState(false)
   const toggleShowLogout = () => setShowLogout(!showLogout)
 
+  function gotoUserPage(username) {
+    setCurrentUserPage(username)
+  }
+
   function onLogoutFormClickHandler() {
-    fetch('/api/logout')
-    setIsLoggedIn(false)
-    setCurrentUser(undefined)
-    toggleShowLogout()
+    fetch('/api/logout', {
+      mode: 'no-cors'
+    })
+    .then(() => {
+      setIsLoggedIn(false)
+      setLoggedInUser(undefined)
+      toggleShowLogout()
+    })
   }
 
   function onLoginFormClickHandler(data) {
     fetch('/api/login', {
       body: data,
-      method: 'POST'
+      method: 'POST',
+      mode: 'no-cors',
+      redirect: 'follow'
     })
     .then(response => {
       if(!response.ok) {
         toggleShowError()
       } 
       else {
-        console.log(response)
         setIsLoggedIn(true)
-        setCurrentUser(data.get('username'))
+        setLoggedInUser(data.get('username'))
+        setCurrentUserPage(data.get('username'))
       }
     })
   }
@@ -52,7 +63,10 @@ if(!isLoggedIn) {
     <>
       <OffCanvas 
       onLoginFormClickHandler={onLoginFormClickHandler} 
-      onRegisterFormClickHandler={onRegisterFormClickHandler} />
+      onRegisterFormClickHandler={onRegisterFormClickHandler}
+      gotoUserPage={() => {
+        console.log('unauthorized')
+      }} />
       <ToastContainer position='top-end'>
         <Toast show={showError} onClose={toggleShowError} bg='warning' delay={3000} autohide>
           <Toast.Header>
@@ -71,6 +85,9 @@ if(!isLoggedIn) {
           </Toast.Body>
         </Toast>
       </ToastContainer>
+      <Container>
+        Register or log in to view other users' posts or post yourself!
+      </Container>
     </>
   )
 }
@@ -79,12 +96,11 @@ if(!isLoggedIn) {
         <OffCanvas onLoginFormClickHandler={onLoginFormClickHandler} 
         onRegisterFormClickHandler={onRegisterFormClickHandler} 
         onLogoutFormClickHandler={onLogoutFormClickHandler} 
-        isLoggedIn={isLoggedIn} 
-        currentUser={currentUser} />
+        isLoggedIn={isLoggedIn}
+        gotoUserPage={gotoUserPage}
+        loggedInUser={loggedInUser}/>
         <div className='flex-container'>
-          <div className='flex-child'>
-            <Posts currentUser={currentUser} />
-          </div>
+          <Posts currentUserPage={currentUserPage} loggedInUser={loggedInUser} />
         </div>
       </>
     )

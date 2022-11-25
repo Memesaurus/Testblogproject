@@ -5,6 +5,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class User {
+public class User{
     private static final PasswordEncoder PASSWORD_ENCODER =
             PasswordEncoderFactories.createDelegatingPasswordEncoder();
     @Id
@@ -33,5 +35,4 @@ public class User {
         this.password = PASSWORD_ENCODER.encode(password);
         this.setIsActive(true);
     }
-
 }

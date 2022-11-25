@@ -10,11 +10,25 @@
     margin-left: 15px;
     margin-top: 5px;
     text-align: center;
-    width: 250px;
+    width: 30rem;
     word-wrap: break-word;
+}
+
+.like {
+    text-align: left;
+    font-size: large;
+}
+
+.deleteBtn {
+    font-size: small;
+    text-align: right;
+    margin-right: 5px;
 }
 
 .authorDiv {
     font-size: small;
     text-align: right;
+    text-align: right;
+    margin-right: 5px;
+    margin-bottom: 2px;
 }
