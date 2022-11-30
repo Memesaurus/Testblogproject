@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
-import { Button } from 'react-bootstrap'
+import React, { useRef, useState } from 'react'
+import { Button, Form, InputGroup } from 'react-bootstrap'
 import './Post.css'
+import Comment from './Comment'
 
-export default function Post({post, onClickDeletePostHandler, loggedInUser}) {
-  const [likes, setLikes] = useState(post.likeCount);
+export default function Post({ post, onClickDeletePostHandler, loggedInUser}) {
+  const [likes, setLikes] = useState(post.likeCount)
+  const [comments, setComments] = useState(post.comments)
+  const commentBodyRef = useRef()
 
   function handleDeleteButton() {
     if (post.user.username == loggedInUser) {
@@ -22,12 +25,29 @@ export default function Post({post, onClickDeletePostHandler, loggedInUser}) {
   function handleLike() {
     fetch(`/api/posts/${post.id}/like`, {
       mode: 'no-cors',
-      method: 'POST'
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     }).then(response => response.json())
     .then(data => {
       const count = data.data.likeCount
       setLikes(count)
     })
+  }
+
+  function onClickAddCommentHandler() {
+    const commentBody = commentBodyRef.current.value
+    fetch(`/api/posts/${post.id}/comments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({body: commentBody, username: loggedInUser})
+    })
+    .then(response => response.json())
+    .then(data => setComments([...comments, data.data]))
+    commentBodyRef.current.value = null
   }
 
   return (
@@ -42,6 +62,13 @@ export default function Post({post, onClickDeletePostHandler, loggedInUser}) {
           </div>
          author: {post.user.username}
         </div>
+        {
+          comments.map(comment => (<Comment key={comment.id} comment={comment} onClickDeletePostHandler={onClickDeletePostHandler} loggedInUser={loggedInUser}/>))
+        }
+        <InputGroup>
+          <Form.Control placeholder='add comment' ref={commentBodyRef}></Form.Control>
+          <Button onClick={onClickAddCommentHandler}> Submit </Button>
+        </InputGroup>
     </div>
   )
 }

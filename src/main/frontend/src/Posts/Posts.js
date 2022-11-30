@@ -22,10 +22,11 @@ export default function Posts({currentUserPage, loggedInUser}) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({body: postBody, username: currentUserPage})
+            body: JSON.stringify({body: postBody, username: loggedInUser})
         })
         .then(response => response.json())
         .then(data => setPosts([...posts, data.data]))
+        .then(postBodyRef.current.value = null)
     }
 
     function deletePost(postId) {
@@ -52,14 +53,22 @@ export default function Posts({currentUserPage, loggedInUser}) {
         }
     }
 
+    function handleInputAppearance() {
+        if (currentUserPage === loggedInUser) {
+            return (
+                <InputGroup>
+                    <Form.Control placeholder='Your input' ref={postBodyRef}></Form.Control>
+                    <Button onClick={onClickHandler}> Submit </Button>
+                </InputGroup>
+            )
+        }   
+    }
+
   return (
     <>
         <div className='postsBody'>
             Posts of {currentUserPage}
-            <InputGroup>
-                <Form.Control placeholder='Your input' ref={postBodyRef}></Form.Control>
-                <Button onClick={onClickHandler}> Submit </Button>
-            </InputGroup>
+            {handleInputAppearance()}
             {
                 posts.map(post => (<Post key={post.id} post={post} onClickDeletePostHandler={onClickDeletePostHandler} currentUserPage={currentUserPage} loggedInUser={loggedInUser}/>))
             }
