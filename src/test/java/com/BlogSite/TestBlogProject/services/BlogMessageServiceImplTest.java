@@ -1,11 +1,11 @@
 package com.BlogSite.TestBlogProject.services;
 
 import com.BlogSite.TestBlogProject.annotations.WithMockMyUserDetails;
-import com.BlogSite.TestBlogProject.dto.PostDto;
-import com.BlogSite.TestBlogProject.mapper.PostMapper;
+import com.BlogSite.TestBlogProject.dto.BlogMessageDto;
+import com.BlogSite.TestBlogProject.mapper.BlogMessageMapper;
 import com.BlogSite.TestBlogProject.models.*;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,7 +16,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,15 +25,15 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
-class PostServiceImplTest {
+class BlogMessageServiceImplTest {
     @Mock
-    private UserServiceImpl userService;
+    private UserRepository userRepository;
     @Mock
     private PostRepository postRepository;
     @Mock
-    private PostMapper postMapper;
+    private BlogMessageMapper postMapper;
     @InjectMocks
-    private PostServiceImpl postService;
+    private BlogMessageServiceImpl postService;
 
     @Test
     void getActivePostsByUserUsername_ShouldGetActivePostsByUsername() {
@@ -51,7 +50,7 @@ class PostServiceImplTest {
         List<Post> expectedList = List.of(post);
 
         doReturn(Optional.of(expectedList))
-                .when(postRepository).findByUserUsernameAndIsActive(username, true);
+                .when(postRepository).findPostsAndActiveComments(username, true);
         List<Post> actualList = postService.getActivePostsByUserUsername(username).getData();
 
         Assertions.assertEquals(expectedList, actualList);
@@ -67,7 +66,7 @@ class PostServiceImplTest {
 
         doReturn(Optional.of(post))
                 .when(postRepository).findById(1L);
-        Long actualCount = postService.getLikeCountByPostId(1L).getData();
+        Long actualCount = postService.getLikeCountByBlogMessageId(1L).getData();
 
         Assertions.assertEquals(expectedCount, actualCount);
     }
@@ -99,26 +98,24 @@ class PostServiceImplTest {
         Post expectedPost = new Post(1L,
                 username,
                 expectedUser);
-        Result<User> mockResult = new Result<>();
-        mockResult.setData(expectedUser);
-        PostDto postDto = new PostDto();
-        postDto.setBody(username);
-        postDto.setUsername(username);
+        BlogMessageDto blogMessageDto = new BlogMessageDto();
+        blogMessageDto.setBody(username);
+        blogMessageDto.setUsername(username);
 
-        doReturn(mockResult)
-                .when(userService).getUserByUsername(username);
+        doReturn(Optional.of(expectedUser))
+                .when(userRepository).findByUsername(username);
         doReturn(mockPost)
-                .when(postMapper).postDtoToPost(postDto, mockResult.getData());
+                .when(postMapper).blogMessageDtoToPost(blogMessageDto, expectedUser);
         doReturn(expectedPost)
                 .when(postRepository).save(mockPost);
-        Post actualPost = postService.addPost(postDto).getData();
+        Post actualPost = postService.addPost(blogMessageDto).getData();
 
         Assertions.assertEquals(expectedPost, actualPost);
     }
 
     @Test
     @WithMockMyUserDetails
-    void changeUserPostLikeState_ShouldChangeLikeStates() {
+    void changeUserBlogMessageLikeState_ShouldChangeLikeStates() {
         User user = new User(1L,
                 "Test",
                 "Test",
@@ -131,21 +128,19 @@ class PostServiceImplTest {
         Post notLikedPost = new Post(2L, "IsNotLiked", user);
         Post expectedNotLikedPost = new Post(2L, "IsNotLiked", user);
         expectedNotLikedPost.addLike(user);
-        Result<User> userResult = new Result<>();
-        userResult.setData(user);
 
-        doReturn(userResult)
-                .when(userService).getUser(1L);
+        doReturn(Optional.of(user))
+                .when(userRepository).findById(1L);
         doReturn(Optional.of(likedPost))
                 .when(postRepository).findById(1L);
         doReturn(expectedLikedPost)
                 .when(postRepository).save(likedPost);
-        Post actualNotLikedPost = postService.changeUserPostLikeState(1L).getData();
+        BlogMessage actualNotLikedPost = postService.changeUserBlogMessageLikeState(1L).getData();
         doReturn(Optional.of(notLikedPost))
                 .when(postRepository).findById(2L);
         doReturn(expectedNotLikedPost)
                 .when(postRepository).save(notLikedPost);
-        Post actualLikedPost = postService.changeUserPostLikeState(2L).getData();
+        BlogMessage actualLikedPost = postService.changeUserBlogMessageLikeState(2L).getData();
 
         Assertions.assertEquals(likedPost, actualNotLikedPost);
         Assertions.assertEquals(notLikedPost, actualLikedPost);
@@ -171,12 +166,10 @@ class PostServiceImplTest {
                 "Test",
                 true,
                 new Role());
-        Result<User> userResult = new Result<>();
-        userResult.setData(user);
 
-        doReturn(userResult)
-                .when(userService).getUser(1L);
-        ErrorCode actualError = postService.changeUserPostLikeState(1L).getError();
+        doReturn(Optional.of(user))
+                .when(userRepository).findById(1L);
+        ErrorCode actualError = postService.changeUserBlogMessageLikeState(1L).getError();
 
         Assertions.assertEquals(expectedError, actualError);
     }
@@ -202,7 +195,7 @@ class PostServiceImplTest {
                 .when(postRepository).findById(1L);
         doReturn(expectedPost)
                 .when(postRepository).save(post);
-        Post actualPost = postService.hideUserPost(1L).getData();
+        BlogMessage actualPost = postService.hideUserBlogMessage(1L).getData();
 
         Assertions.assertEquals(expectedPost, actualPost);
     }
@@ -217,7 +210,7 @@ class PostServiceImplTest {
 
         doReturn(Optional.of(post))
                 .when(postRepository).findById(1L);
-        ErrorCode actualError = postService.hideUserPost(1L).getError();
+        ErrorCode actualError = postService.hideUserBlogMessage(1L).getError();
 
         Assertions.assertEquals(expectedError, actualError);
     }
@@ -225,15 +218,13 @@ class PostServiceImplTest {
     @Test
     void addPost_ShouldReturnErrorCode() {
         ErrorCode expectedResponse = ErrorCode.NOT_FOUND;
-        Result<User> mockResult = new Result<>();
-        mockResult.setError(expectedResponse);
-        PostDto postDto = new PostDto();
-        postDto.setUsername(null);
-        postDto.setBody(null);
+        BlogMessageDto blogMessageDto = new BlogMessageDto();
+        blogMessageDto.setUsername(null);
+        blogMessageDto.setBody("123");
 
-        doReturn(mockResult)
-                .when(userService).getUserByUsername(null);
-        ErrorCode actualResponse = postService.addPost(postDto).getError();
+        doReturn(Optional.empty())
+                .when(userRepository).findByUsername(null);
+        ErrorCode actualResponse = postService.addPost(blogMessageDto).getError();
 
         Assertions.assertEquals(expectedResponse, actualResponse);
     }

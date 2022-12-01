@@ -5,7 +5,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class PostDto implements Serializable {
+public class BlogMessageDto implements Serializable {
     private String body;
     private String username;
 }

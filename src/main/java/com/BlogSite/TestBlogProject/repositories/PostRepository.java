@@ -11,12 +11,17 @@ import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    @Query("select p from Post p " +
-            "JOIN FETCH p.user u " +
-            "where u.username = :username")
     Optional<List<Post>> findByUserUsername(@Param("username") String username);
 
-    Optional<List<Post>> findByUserUsernameAndIsActive(String username, Boolean active);
+    @Query("SELECT DISTINCT p FROM Post p " +
+            "JOIN p.user u " +
+            "LEFT JOIN FETCH p.comments c " +
+            "WHERE u.username = :username " +
+            "AND p.isActive = :isActive " +
+            "AND (c.isActive = True OR c IS NULL)")
+    Optional<List<Post>> findPostsAndActiveComments(
+            @Param("username") String username,
+            @Param("isActive") Boolean isActive);
 
     List<Post> findByUserId(Long id);
 }
