@@ -1,7 +1,11 @@
 package com.BlogSite.TestBlogProject.integration;
 
 import com.BlogSite.TestBlogProject.dto.LoginDto;
+import com.BlogSite.TestBlogProject.models.ErrorCode;
+import com.BlogSite.TestBlogProject.models.Role;
+import com.BlogSite.TestBlogProject.models.Roles;
 import com.BlogSite.TestBlogProject.models.User;
+import com.BlogSite.TestBlogProject.repositories.RoleRepository;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
@@ -14,6 +18,9 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,33 +35,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@Disabled
 class UserIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeAll
-    static void beforeAll() {
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication =
-                new TestingAuthenticationToken("user", "pass", "ROLE_USER");
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-    }
-
     @Test
-    void addUser_ShouldAddUserToDataBase() throws Exception {
+    void addUser_ShouldDoPostRequest() throws Exception {
         Long id = 1L;
         String name = "Test";
         LoginDto loginDto = new LoginDto();
         loginDto.setEmail(name);
+        loginDto.setPassword(name);
         loginDto.setUsername(name);
-        User expectedUser = new User(id, name, name, name, true, null);
-
         mockMvc.perform(post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
@@ -63,21 +61,19 @@ class UserIntegrationTest {
                 .andExpect(jsonPath("$.error").isEmpty())
                 .andDo(print());
 
-        List<User> userList = userRepository.findAll();
-        Assertions.assertTrue(userList.contains(expectedUser));
+        Assertions.assertTrue(userRepository.existsById(id));
     }
 
 
     @Test
     void getUser_ShouldReturnUserByUserId() throws Exception {
-        Long id = 1L;
-        String name = "Test";
-        User user = new User(id, name, name, name, true, null);
-
+        Long id = 100L;
         mockMvc.perform(get("/api/users/{id}", id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data").value(user))
+                .andExpect(jsonPath("$.error").isEmpty())
+                .andExpect(jsonPath("$.data.id").value(id))
+                .andExpect(jsonPath("$.data.username").value("TestUser"))
                 .andDo(print());
     }
 

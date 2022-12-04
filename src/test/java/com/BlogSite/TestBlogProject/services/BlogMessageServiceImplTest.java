@@ -4,6 +4,7 @@ import com.BlogSite.TestBlogProject.annotations.WithMockMyUserDetails;
 import com.BlogSite.TestBlogProject.dto.BlogMessageDto;
 import com.BlogSite.TestBlogProject.mapper.BlogMessageMapper;
 import com.BlogSite.TestBlogProject.models.*;
+import com.BlogSite.TestBlogProject.repositories.BlogMessageRepository;
 import com.BlogSite.TestBlogProject.repositories.PostRepository;
 import com.BlogSite.TestBlogProject.repositories.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -25,9 +26,12 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration
+@WithMockMyUserDetails
 class BlogMessageServiceImplTest {
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private BlogMessageRepository blogMessageRepository;
     @Mock
     private PostRepository postRepository;
     @Mock
@@ -65,7 +69,7 @@ class BlogMessageServiceImplTest {
         post.setLikeCount(100L);
 
         doReturn(Optional.of(post))
-                .when(postRepository).findById(1L);
+                .when(blogMessageRepository).findById(1L);
         Long actualCount = postService.getLikeCountByBlogMessageId(1L).getData();
 
         Assertions.assertEquals(expectedCount, actualCount);
@@ -91,7 +95,12 @@ class BlogMessageServiceImplTest {
     @Test
     void addPost_ShouldSavePost() {
         String username = "Test";
-        User expectedUser = new User();
+        User expectedUser = new User(1L,
+                username,
+                username,
+                username,
+                true,
+                null);
         Post mockPost = new Post(null,
                 username,
                 expectedUser);
@@ -114,7 +123,6 @@ class BlogMessageServiceImplTest {
     }
 
     @Test
-    @WithMockMyUserDetails
     void changeUserBlogMessageLikeState_ShouldChangeLikeStates() {
         User user = new User(1L,
                 "Test",
@@ -132,14 +140,14 @@ class BlogMessageServiceImplTest {
         doReturn(Optional.of(user))
                 .when(userRepository).findById(1L);
         doReturn(Optional.of(likedPost))
-                .when(postRepository).findById(1L);
+                .when(blogMessageRepository).findById(1L);
         doReturn(expectedLikedPost)
-                .when(postRepository).save(likedPost);
+                .when(blogMessageRepository).save(likedPost);
         BlogMessage actualNotLikedPost = postService.changeUserBlogMessageLikeState(1L).getData();
         doReturn(Optional.of(notLikedPost))
-                .when(postRepository).findById(2L);
+                .when(blogMessageRepository).findById(2L);
         doReturn(expectedNotLikedPost)
-                .when(postRepository).save(notLikedPost);
+                .when(blogMessageRepository).save(notLikedPost);
         BlogMessage actualLikedPost = postService.changeUserBlogMessageLikeState(2L).getData();
 
         Assertions.assertEquals(likedPost, actualNotLikedPost);
@@ -157,7 +165,6 @@ class BlogMessageServiceImplTest {
     }
 
     @Test
-    @WithMockMyUserDetails
     void changeUserPostLikeState_ShouldReturnNotFound() {
         ErrorCode expectedError = ErrorCode.NOT_FOUND;
         User user = new User(1L,
@@ -175,7 +182,6 @@ class BlogMessageServiceImplTest {
     }
 
     @Test
-    @WithMockMyUserDetails
     void hideUserPost_ShouldUpdateUserPost() {
         User user = new User(1L,
                 "Test",
@@ -192,16 +198,15 @@ class BlogMessageServiceImplTest {
         expectedPost.setIsActive(false);
 
         doReturn(Optional.of(post))
-                .when(postRepository).findById(1L);
+                .when(blogMessageRepository).findById(1L);
         doReturn(expectedPost)
-                .when(postRepository).save(post);
+                .when(blogMessageRepository).save(post);
         BlogMessage actualPost = postService.hideUserBlogMessage(1L).getData();
 
         Assertions.assertEquals(expectedPost, actualPost);
     }
 
     @Test
-    @WithMockMyUserDetails
     void hideUserPost_ShouldReturnUnauthorised() {
         Post post = new Post(1L,
                 "Test",
@@ -209,7 +214,7 @@ class BlogMessageServiceImplTest {
         ErrorCode expectedError = ErrorCode.UNAUTHORISED;
 
         doReturn(Optional.of(post))
-                .when(postRepository).findById(1L);
+                .when(blogMessageRepository).findById(1L);
         ErrorCode actualError = postService.hideUserBlogMessage(1L).getError();
 
         Assertions.assertEquals(expectedError, actualError);
