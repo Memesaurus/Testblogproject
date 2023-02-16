@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.dto.LoginDto;
+import com.BlogSite.TestBlogProject.dto.AuthRequestDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
@@ -16,5 +16,5 @@ public interface UserService {
 
     Result<User> getUserByUsername(String username);
 
-    Result<User> addUser(LoginDto loginDto);
+    Result<User> addUser(AuthRequestDto authRequestDto);
 }

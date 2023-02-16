@@ -17,8 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "JOIN p.user u " +
             "LEFT JOIN FETCH p.comments c " +
             "WHERE u.username = :username " +
-            "AND p.isActive = :isActive " +
-            "AND (c.isActive = True OR c IS NULL)")
+            "AND p.isActive = :isActive")
     Optional<List<Post>> findPostsAndActiveComments(
             @Param("username") String username,
             @Param("isActive") Boolean isActive);

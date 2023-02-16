@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.dto.LoginDto;
+import com.BlogSite.TestBlogProject.dto.AuthRequestDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.*;
@@ -55,12 +55,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Result<User> addUser(LoginDto loginDto) {
+    public Result<User> addUser(AuthRequestDto authRequestDto) {
         Result<User> result = new Result<>();
-        if (userRepository.findByUsername(loginDto.getUsername()).isPresent()) {
+        if (userRepository.findByUsername(authRequestDto.getUsername()).isPresent()) {
             result.setError(ErrorCode.ALREADY_EXISTS);
         } else {
-            User user = userMapper.loginDtoToUser(loginDto, Roles.ROLE_USER.getRole());
+            User user = userMapper.loginDtoToUser(authRequestDto, Roles.ROLE_USER.getRole());
             user.encryptPassword(user.getPassword());
             user = userRepository.save(user);
             result.setData(user);

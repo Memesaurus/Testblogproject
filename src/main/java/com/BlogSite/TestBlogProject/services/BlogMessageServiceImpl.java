@@ -12,7 +12,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class BlogMessageServiceImpl implements BlogMessageService {
@@ -39,11 +41,18 @@ public class BlogMessageServiceImpl implements BlogMessageService {
         return result;
     }
 
+    private List<Post> filterDeletedComments(List<Post> list) {
+        list.forEach(post ->
+            post.setComments(post.getComments().stream().filter(BlogMessage::getIsActive).collect(Collectors.toSet()))
+        );
+        return list;
+    }
+
     @Override
     public Result<List<Post>> getActivePostsByUserUsername(String username) {
         Result<List<Post>> result = new Result<>();
         postRepository.findPostsAndActiveComments(username, true).ifPresentOrElse(
-                result::setData,
+                posts -> result.setData(filterDeletedComments(posts)),
                 () -> result.setError(ErrorCode.NOT_FOUND));
         return result;
     }

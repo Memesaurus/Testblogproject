@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.controllers;
 
-import com.BlogSite.TestBlogProject.dto.LoginDto;
+import com.BlogSite.TestBlogProject.dto.AuthRequestDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.models.Result;
 import com.BlogSite.TestBlogProject.models.User;
@@ -12,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
     @Autowired
     private UserService userService;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping
-    public Result<User> postUser(@RequestBody LoginDto loginDto) {
-        return userService.addUser(loginDto);
+    public Result<User> postUser(@RequestBody AuthRequestDto authRequestDto) {
+        return userService.addUser(authRequestDto);
     }
 }

@@ -1,6 +1,6 @@
 package com.BlogSite.TestBlogProject.services;
 
-import com.BlogSite.TestBlogProject.dto.LoginDto;
+import com.BlogSite.TestBlogProject.dto.AuthRequestDto;
 import com.BlogSite.TestBlogProject.dto.UserDto;
 import com.BlogSite.TestBlogProject.mapper.UserMapper;
 import com.BlogSite.TestBlogProject.models.ErrorCode;
@@ -127,29 +127,29 @@ class UserServiceImplTest {
                 username,
                 true,
                 null);
-        LoginDto loginDto = new LoginDto();
-        loginDto.setUsername(username);
-        loginDto.setEmail(username);
+        AuthRequestDto authRequestDto = new AuthRequestDto();
+        authRequestDto.setUsername(username);
+        authRequestDto.setEmail(username);
 
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(username);
         doReturn(mockUser)
-                .when(userMapper).loginDtoToUser(loginDto, Roles.ROLE_USER.getRole());
+                .when(userMapper).loginDtoToUser(authRequestDto, Roles.ROLE_USER.getRole());
         doReturn(expectedUser)
                 .when(userRepository).save(mockUser);
-        User actualUser = userService.addUser(loginDto).getData();
+        User actualUser = userService.addUser(authRequestDto).getData();
 
         Assertions.assertEquals(expectedUser, actualUser);
     }
 
     @Test
     void addUser_ShouldReturnErrorCode() {
-        LoginDto loginDto = new LoginDto();
+        AuthRequestDto authRequestDto = new AuthRequestDto();
         ErrorCode expectedError = ErrorCode.ALREADY_EXISTS;
 
         doReturn(Optional.of(new User()))
-                .when(userRepository).findByUsername(loginDto.getUsername());
-        ErrorCode actualError = userService.addUser(loginDto).getError();
+                .when(userRepository).findByUsername(authRequestDto.getUsername());
+        ErrorCode actualError = userService.addUser(authRequestDto).getError();
 
         Assertions.assertEquals(expectedError, actualError);
     }
