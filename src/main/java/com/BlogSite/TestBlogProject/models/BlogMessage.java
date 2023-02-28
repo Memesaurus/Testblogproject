@@ -19,7 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode
-public class BlogMessage {
+public abstract class BlogMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
